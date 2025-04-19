@@ -1,0 +1,444 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Churn Prediction{% endblock %}
+
+{% block content %}
+    <div class="container">
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i> {{ error }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endif %}
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card">
+            <div class="card-header text-center">
+              <div class="logo-container">
+                <img
+                  src="{{ url_for('static', filename='img/churn.jpg') }}"
+                  alt="Churn Prediction"
+                  class="logo"
+                />
+                <h1 class="m-0">Customer Churn Prediction</h1>
+              </div>
+              <p class="mb-0">
+                Predict whether your customer will churn based on their behavior
+                patterns
+              </p>
+            </div>
+            <div class="card-body p-4">
+              <form
+                action="{{ url_for('index_page') }}"
+                method="post"
+                class="needs-validation"
+                novalidate
+              >
+                <!-- Customer Basic Info Section -->
+                <div class="mb-4">
+                  <h5 class="section-title">
+                    <i class="fas fa-user"></i> Customer Basic Information
+                  </h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label for="Tenure" class="form-label"
+                        >Tenure (months)</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Tenure"
+                          name="Tenure"
+                          placeholder="e.g. 12"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-calendar-alt"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide a valid tenure.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Gender" class="form-label">Gender</label>
+                      <select
+                        id="Gender"
+                        name="Gender"
+                        class="form-select"
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select gender
+                        </option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select a gender.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Maritalstatus" class="form-label"
+                        >Marital Status</label
+                      >
+                      <select
+                        id="Maritalstatus"
+                        name="Maritalstatus"
+                        class="form-select"
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select status
+                        </option>
+                        <option value="single">Single</option>
+                        <option value="married">Married</option>
+                        <option value="divorced">Divorced</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select a marital status.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Location & Shipping Section -->
+                <div class="mb-4">
+                  <h5 class="section-title">
+                    <i class="fas fa-map-marker-alt"></i> Location & Shipping
+                    Information
+                  </h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label for="Citytier" class="form-label">City Tier</label>
+                      <select
+                        id="Citytier"
+                        name="Citytier"
+                        class="form-select"
+                        required
+                      >
+                        <option value="" selected disabled>Select tier</option>
+                        <option value="1">Tier 1</option>
+                        <option value="2">Tier 2</option>
+                        <option value="3">Tier 3</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select a city tier.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Warehousetohome" class="form-label"
+                        >Warehouse to Home (km)</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          step="0.01"
+                          class="form-control"
+                          id="Warehousetohome"
+                          name="Warehousetohome"
+                          placeholder="e.g. 5.5"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-truck"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide a valid distance.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Numberofaddress" class="form-label"
+                        >Number of Addresses</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Numberofaddress"
+                          name="Numberofaddress"
+                          placeholder="e.g. 2"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-home"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide the number of addresses.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- App Usage Section -->
+                <div class="mb-4">
+                  <h5 class="section-title">
+                    <i class="fas fa-mobile-alt"></i> App Usage Information
+                  </h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label for="Hourspendonapp" class="form-label"
+                        >Hours Spent on App</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          step="0.1"
+                          class="form-control"
+                          id="Hourspendonapp"
+                          name="Hourspendonapp"
+                          placeholder="e.g. 3.5"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-clock"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide valid hours.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Numberofdeviceregistered" class="form-label"
+                        >Number of Devices</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Numberofdeviceregistered"
+                          name="Numberofdeviceregistered"
+                          placeholder="e.g. 2"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-tablet-alt"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide the number of devices.
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="Satisfactionscore" class="form-label"
+                        >Satisfaction Score (1-5)</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Satisfactionscore"
+                          name="Satisfactionscore"
+                          placeholder="e.g. 4"
+                          required
+                          min="1"
+                          max="5"
+                        />
+                        <i class="fas fa-star"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide a score between 1 and 5.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Order History Section -->
+                <div class="mb-4">
+                  <h5 class="section-title">
+                    <i class="fas fa-shopping-cart"></i> Order History
+                  </h5>
+                  <div class="row g-3">
+                    <div class="col-md-3">
+                      <label for="Ordercount" class="form-label"
+                        >Order Count</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Ordercount"
+                          name="Ordercount"
+                          placeholder="e.g. 5"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-list-ol"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide the order count.
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="Daysincelastorder" class="form-label"
+                        >Days Since Last Order</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Daysincelastorder"
+                          name="Daysincelastorder"
+                          placeholder="e.g. 14"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-calendar-check"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide valid days.
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="Couponused" class="form-label"
+                        >Coupons Used</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="Couponused"
+                          name="Couponused"
+                          placeholder="e.g. 2"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-tag"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide the number of coupons used.
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="Cashbackamount" class="form-label"
+                        >Cashback Amount</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          step="0.01"
+                          class="form-control"
+                          id="Cashbackamount"
+                          name="Cashbackamount"
+                          placeholder="e.g. 10.50"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-dollar-sign"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide a valid amount.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Customer Feedback Section -->
+                <div class="mb-4">
+                  <h5 class="section-title">
+                    <i class="fas fa-comment-alt"></i> Customer Feedback
+                  </h5>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label for="Complain" class="form-label"
+                        >Complaints (0 for No, 1 for Yes)</label
+                      >
+                      <select
+                        id="Complain"
+                        name="Complain"
+                        class="form-select"
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select option
+                        </option>
+                        <option value="0">No Complaints</option>
+                        <option value="1">Has Complaints</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select a complaint status.
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label
+                        for="Orderamounthikefromlastyear"
+                        class="form-label"
+                        >Order Amount Hike (%)</label
+                      >
+                      <div class="input-with-icon">
+                        <input
+                          type="number"
+                          step="0.01"
+                          class="form-control"
+                          id="Orderamounthikefromlastyear"
+                          name="Orderamounthikefromlastyear"
+                          placeholder="e.g. 15.2"
+                          required
+                          min="0"
+                        />
+                        <i class="fas fa-chart-line"></i>
+                      </div>
+                      <div class="invalid-feedback">
+                        Please provide a valid percentage.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                  <button class="btn btn-primary btn-lg px-5" type="submit">
+                    <i class="fas fa-analytics me-2"></i> Predict Churn
+                    Probability
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="d-flex justify-content-center mt-3">
+        <a href="/history" class="btn btn-primary">
+          📜 View Prediction History
+        </a>
+      </div> -->
+      
+      
+
+      <!-- <footer class="mt-3">
+        <p>© 2025 Customer Churn Prediction | krish9495</p>
+      </footer> -->
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Form Validation Script -->
+    <script>
+      (() => {
+        "use strict";
+
+        const forms = document.querySelectorAll(".needs-validation");
+
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+    </script>
+{% endblock %}

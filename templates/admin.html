@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+
+    <!-- Message Display -->
+    {% if message %}
+    <div class="alert alert-info text-center">{{ message }}</div>
+    {% endif %}
+
+    <!-- Add New User Form -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">➕ Add New User</h5>
+            <form method="POST" class="row g-3">
+                <div class="col-md-2">
+                    <input type="text" name="new_username" class="form-control" placeholder="Username" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="email" name="new_email" class="form-control" placeholder="Email" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="new_phone" class="form-control" placeholder="Phone (e.g. 9876543210)" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="password" name="new_password" class="form-control" placeholder="Password" required />
+                </div>
+                <div class="col-md-2">
+                    <select name="new_role" class="form-select">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Table -->
+    <table class="table table-bordered table-hover bg-white shadow">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th> <!-- ✅ New Column -->
+                <th>Role</th>
+                <th>Super Admin</th> <!-- ✅ Added Super Admin Column -->
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="text-center align-middle">
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td> <!-- ✅ New Data Cell -->
+                <td>{{ user.role }}</td>
+                <!-- ✅ Display Super Admin Status -->
+                <td>{% if user.is_superadmin %}✅{% else %}❌{% endif %}</td> 
+                
+                <!-- Action Column -->
+                <td>
+                    {% if user.id != session['user_id'] %}
+                        <!-- Super admins can delete anyone; admins cannot delete super admins -->
+                        {% if session.get('is_superadmin') or (session.get('role') == 'admin' and not user.is_superadmin) %}
+                            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <input type="hidden" name="delete_user_id" value="{{ user.id }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        {% else %}
+                            <!-- No permission to delete -->
+                            <span class="text-muted">No permission</span>
+                        {% endif %}
+                    {% else %}
+                        <!-- Current logged-in user's row -->
+                        <span class="text-muted">You</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('index_page') }}" class="btn btn-outline-secondary">← Back to Home</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}OTP Verification{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 bg-white p-4 rounded shadow">
+    <h2 class="text-center mb-3">🔐 Enter OTP</h2>
+
+    {% if error %}
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="mb-3">
+        <label for="otp">OTP sent to your phone:</label>
+        <input type="text" name="otp" id="otp" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-success w-100">Verify</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

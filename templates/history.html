@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+
+
+    <!-- Download Button -->
+    <!-- Download and New Prediction Buttons -->
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="/download" class="btn btn-success">
+            📥 Download as CSV
+        </a>
+        <a href="{{ url_for('index_page') }}" class="btn btn-primary">
+            🔄 New Prediction
+        </a>
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-center my-4">📊 Prediction History</h2>
+
+    <!-- Table -->
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        {% for key in records[0].keys() %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in records %}
+                    <tr>
+                        {% for val in row.values() %}
+                            <td>{{ val }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
+
