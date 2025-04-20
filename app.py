@@ -63,9 +63,8 @@ app = Flask(__name__)
 # app.secret_key = 'kunal1234'
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
-# ------------------------------
+
 # Load model and predict churn
-# ------------------------------
 def churn_prediction(tenure, citytier, warehousetohome, gender, hourspendonapp, numberofdeviceregistered,
                      satisfactionscore, maritalstatus, numberofaddress, complain,
                      orderamounthikefromlastyear, couponused, ordercount, daysincelastorder, cashbackamount):
@@ -112,9 +111,8 @@ def churn_prediction(tenure, citytier, warehousetohome, gender, hourspendonapp, 
     output_probab = model.predict_proba([input_array])[0][1]
     return round(output_probab, 4)
 
-# ------------------------------------------
+
 # Insert prediction into MySQL database
-# ------------------------------------------
 def insert_into_db(data):
     try:
         conn = mysql.connector.connect(
@@ -157,9 +155,8 @@ def insert_into_db(data):
     except mysql.connector.Error as err:
         print("❌ MySQL Error:", err)
 
-# -----------------------------------
+
 # Main route
-# -----------------------------------
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index_page():
@@ -691,8 +688,7 @@ def reset_password():
 
     return render_template('reset_password.html')
 
-# --------------------
+
 # Run the app
-# --------------------
 if __name__ == '__main__':
     app.run(debug=True)
