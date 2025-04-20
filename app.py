@@ -554,7 +554,10 @@ def verify_otp():
                 user_data = session.pop('signup_temp')
 
                 conn = mysql.connector.connect(
-                    host="localhost", user="root", password="6594", database="churn_prediction"
+                    host=DB_HOST,
+                    user=DB_USER,
+                    password=DB_PASSWORD,
+                    database=DB_NAME
                 )
                 cursor = conn.cursor()
                 cursor.execute(
@@ -601,7 +604,10 @@ def forgot_password():
         formatted_phone = phone if phone.startswith('+91') else f'+91{phone}'
 
         conn = mysql.connector.connect(
-            host="localhost", user="root", password="6594", database="churn_prediction"
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
         )
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE email = %s AND phone = %s", (email, formatted_phone))
